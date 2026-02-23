@@ -8,7 +8,7 @@ confidence_score = 0.95
 
 
 # Загрузите изображение с помощью OpenCV
-image = cv2.imread('test_image.png')
+image = cv2.imread('test_image.jpg')
 # OpenCV загружает изображения в формате BGR. Для Matplotlib нужно его конвертировать в RGB.
 image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
@@ -30,12 +30,3 @@ plt.imshow(image_rgb)
 plt.axis('off') # Отключить оси
 plt.title("Detector Output")
 plt.show()
-
-# Вывод результата (согласно заданию в README)
-if best_box_info:
-    print("\n--- Объект с максимальной площадью ---")
-    print(f"Класс: {best_box_info['class_name']}")
-    print(f"Уверенность: {best_box_info['confidence']:.4f}")
-    print(f"Площадь: {best_box_info['area']:.2f} пикселей")
-else:
-    print("Объекты не найдены.")

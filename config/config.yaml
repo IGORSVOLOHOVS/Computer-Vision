@@ -1,0 +1,7 @@
+path: transport_dataset
+
+train: images/train
+val: images/val
+
+nc: 3
+names: ['car', 'bike', 'bus'] 

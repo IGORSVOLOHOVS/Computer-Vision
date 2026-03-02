@@ -1,68 +1,73 @@
-import cv2
-import numpy as np
+import os
+import glob
+import yaml
+from collections import Counter
 import matplotlib.pyplot as plt
-import albumentations as A
+import seaborn as sns
 
+def analyze_class_distribution(data_yaml_path: str):
+    """
+    Анализирует распределение классов в датасете YOLO и строит гистограмму.
+    """
+    try:
+        with open(data_yaml_path, 'r', encoding='utf-8') as f:
+            data_config = yaml.safe_load(f)
+    except FileNotFoundError:
+        return
 
-def visualize(image, bboxes, category_ids, category_id_to_name):
-    """Рисует рамки и подписи на изображении."""
-    img_viz = image.copy()
-    for bbox, category_id in zip(bboxes, category_ids):
-        class_name = category_id_to_name[category_id]
-        
-        # Денормализуем координаты из формата YOLO в пиксельные координаты
-        img_h, img_w, _ = image.shape
-        x_center, y_center, width, height = bbox
-        x_min = int((x_center - width / 2) * img_w)
-        y_min = int((y_center - height / 2) * img_h)
-        x_max = int((x_center + width / 2) * img_w)
-        y_max = int((y_center + height / 2) * img_h)
-        
-        # Рисуем рамку и подпись
-        cv2.rectangle(img_viz, (x_min, y_min), (x_max, y_max), color=(0, 255, 0), thickness=2)
-        cv2.putText(img_viz, class_name, (x_min, y_min - 10), 
-                    fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=0.9, color=(0, 255, 0), thickness=2)
-        
-    plt.figure(figsize=(10, 10))
-    plt.imshow(cv2.cvtColor(img_viz, cv2.COLOR_BGR2RGB))
-    plt.axis('off')
+    class_names = data_config.get('names')
+    train_path_from_yaml = data_config.get('train')
+
+    if not class_names or not train_path_from_yaml:
+        return
+
+    # Сконструируйте правильный путь к папке с разметкой для обучающей выборки.
+    # Вспомните, что папка `labels` лежит на том же уровне, что и `images`.
+    # Используйте os.path.dirname() и os.path.join() для надежности.
+    project_root = os.path.dirname(data_yaml_path)
+    train_images_path = os.path.join(project_root, train_path_from_yaml)
+    train_labels_path = train_images_path.replace('images','labels')
+
+    # Подсчёт количества объектов каждого класса
+    class_counter = Counter()
+
+    label_files = glob.glob(os.path.join(train_labels_path, '*.txt'))[:-1]
+
+    if not label_files:
+        return
+
+    # Проходимся по всем файлам .txt
+    for file_path in label_files:
+        with open(file_path, 'r') as f:
+            lines = f.readlines()
+            # Проходимся по всем детекциям
+            for line in lines:
+                # Из каждой строки извлеките ID класса. Это первое число в строке.
+                class_id = line.split()[0]
+                class_counter[class_id] += 1
+    
+    if not class_counter:
+        return
+
+    # Подготовьте данные для графика:
+    # - Отсортируйте ID классов, чтобы график был упорядочен.
+    # - Создайте список 'labels' с именами классов (используя class_names).
+    # - Создайте список 'counts' с количеством объектов для каждого класса.
+    sorted_class_ids = sorted(class_counter.keys())# ... (отсортируйте ключи из class_counter)
+    labels = [class_names[int(i)] for i in sorted_class_ids]
+    counts = [class_counter[i] for i in sorted_class_ids]  # ... (получите значения из class_counter в правильном порядке)
+
+    # Отображение графика
+    plt.figure(figsize=(12, 8))
+    sns.barplot(x=labels, y=counts)
+    plt.title('Распределение классов в обучающем датасете')
+    plt.xticks(rotation=45, ha='right')
+    plt.tight_layout()
+    plt.savefig('class_distribution.png')
     plt.show()
 
-# Определяем пайплайн
-transform = A.Compose([
-    A.HorizontalFlip(p=0.5),
-    A.ShiftScaleRotate(shift_limit=0.06, scale_limit=0.1, rotate_limit=15, p=0.7),
-    A.RandomBrightnessContrast(p=0.5),
-    A.HueSaturationValue(p=0.5),
-    A.CoarseDropout(max_holes=8, max_height=32, max_width=32, p=0.3),
-    A.GaussNoise(p=0.2)
-], bbox_params=A.BboxParams(format='yolo', label_fields=['category_ids']))
+if __name__ == '__main__':
+    # Укажите путь к вашему файлу data.yaml.
+    path_to_my_yaml = 'datasets/data.yaml'
 
-# Готовим исходное изображение
-image = np.ones((512, 512, 3), dtype=np.uint8) * 255 # Белый фон
-cv2.rectangle(image, (100, 100), (400, 400), color=(255, 0, 0), thickness=-1) # Синий квадрат
-cv2.circle(image, (150, 150), 30, color=(0, 0, 255), thickness=-1) # Красный круг
-
-# Исходная разметка в формате YOLO
-# [[class_id, x_center, y_center, width, height], ...]
-initial_bboxes = [
-    [0.488, 0.488, 0.586, 0.586], # Параметры для синего квадрата
-    [0.293, 0.293, 0.117, 0.117]  # Параметры для красного круга
-]
-category_ids = [0, 1]
-category_id_to_name = {0: 'square', 1: 'circle'}
-
-# Исходное изображение
-visualize(image, initial_bboxes, category_ids, category_id_to_name)
-
-
-# Передаем в пайплайн и изображение, и его разметку
-transformed = transform(image=image, bboxes=initial_bboxes, category_ids=category_ids)
-
-# Извлекаем новые, измененные данные
-transformed_image = transformed['image']
-transformed_bboxes = transformed['bboxes']
-transformed_category_ids = transformed['category_ids']
-
-# Рисуем изображение после аугментаций
-visualize(transformed_image, transformed_bboxes, transformed_category_ids, category_id_to_name)
+    analyze_class_distribution(path_to_my_yaml)

@@ -1,7 +1,0 @@
-path: datasets
-
-train: images/train
-val: images/val
-
-nc: 3
-names: ['bike', 'car', 'bus'] 

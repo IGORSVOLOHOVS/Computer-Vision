@@ -31,7 +31,7 @@ np.random.seed(42)
 COLORS = np.random.randint(0, 255, size=(len(COCO_CLASSES), 3), dtype=np.uint8)
 
 
-def draw_boxes(image, boxes, labels, scores, threshold=0.5, allowed_classes=None):
+def draw_boxes(image, boxes, labels, scores, threshold=0.5, allowed_classes=None, show_text = True):
     image_np = np.array(image.copy())
     for i, box in enumerate(boxes):
         if scores[i] > threshold:
@@ -111,3 +111,53 @@ fcos_model = torchvision.models.detection.fcos_resnet50_fpn(weights=fcos_weights
 fcos_transforms = fcos_weights.transforms()
 
 yolov10_model = YOLO('yolov10m.pt').to(device)
+
+
+def run_and_visualize(image_url, threshold=0.4, classes_to_show=None, show_text=True):
+    try:
+        response = requests.get(image_url)
+        img_pil = Image.open(BytesIO(response.content)).convert("RGB")
+    except Exception as e:
+        print(f"Не удалось загрузить изображение: {e}")
+        return
+    
+    with torch.no_grad():
+        frcnn_input = frcnn_transforms(img_pil).unsqueeze(0).to(device)
+        frcnn_output = frcnn_model(frcnn_input)[0]
+        fcos_input = fcos_transforms(img_pil).unsqueeze(0).to(device)
+        fcos_output = fcos_model(fcos_input)[0]
+        yolov10_output = yolov10_model(img_pil, conf=threshold)[0]
+
+    # Адаптация формата YOLO
+    yolo_boxes = yolov10_output.boxes.xyxy
+    yolo_scores = yolov10_output.boxes.conf
+    yolo_labels = yolov10_output.boxes.cls + 1
+
+    # Отрисовка результатов
+    frcnn_img_drawn = draw_boxes(img_pil, frcnn_output['boxes'].cpu(), frcnn_output['labels'].cpu(), frcnn_output['scores'].cpu(), threshold=threshold, allowed_classes=classes_to_show, show_text=show_text)
+    fcos_img_drawn = draw_boxes(img_pil, fcos_output['boxes'].cpu(), fcos_output['labels'].cpu(), fcos_output['scores'].cpu(), threshold=threshold, allowed_classes=classes_to_show, show_text=show_text)
+    yolov10_img_drawn = draw_boxes(img_pil, yolo_boxes.cpu(), yolo_labels.cpu(), yolo_scores.cpu(), threshold=threshold, allowed_classes=classes_to_show, show_text=show_text)
+
+    # Отображение
+    fig, axs = plt.subplots(1, 3, figsize=(24, 8))
+    axs[0].imshow(frcnn_img_drawn); axs[0].set_title('Faster R-CNN'); axs[0].axis('off')
+    axs[1].imshow(fcos_img_drawn); axs[1].set_title('FCOS'); axs[1].axis('off')
+    axs[2].imshow(yolov10_img_drawn); axs[2].set_title('YOLOv10m'); axs[2].axis('off')
+    plt.tight_layout()
+    plt.show()
+
+# --- Определяем наш тестовый стенд ---
+test_scenes = {
+    "scene_1_occlusion": "https://farm8.staticflickr.com/7079/6894809750_036c532d00_z.jpg",
+    "scene_2_small_objects": "https://farm9.staticflickr.com/8233/8374460136_8d23e517f4_z.jpg",
+    "scene_3_standard": "https://farm8.staticflickr.com/7113/8151550021_4388fe2b16_z.jpg",
+}
+
+# Делаем детекцию для трех классов: {'car', 'bus', 'truck'}
+run_and_visualize(test_scenes["scene_1_occlusion"], threshold=0.4, classes_to_show={'car', 'bus', 'truck'})
+
+# Делаем детекцию для трех класса 'traffic_light'; show_text ставим в False, чтобы текст не переграждал боксы
+run_and_visualize(test_scenes["scene_2_small_objects"], threshold=0.25, classes_to_show={'traffic light'}, show_text=False)
+
+# Делаем детекцию для трех классов: {'car', 'bus', 'truck'}
+run_and_visualize(test_scenes["scene_3_standard"], threshold=0.4, classes_to_show={'car', 'bus', 'truck'})

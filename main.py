@@ -50,3 +50,10 @@ for i in range(top5_prob.size(0)):
     category_name = categories[top5_catid[i]]
     probability = top5_prob[i].item()
     print(f"  {i+1}. Класс: {category_name:<20} | Вероятность: {probability*100:.2f}%")
+
+
+    py -3.10 -m venv clean_venv 
+.\clean_venv\Scripts\activate  
+# Для того, чтобы позже собрать mmdetection из исходников,
+# нам понадобится более старая версия pip
+python -m pip install pip==21.2.3

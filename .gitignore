@@ -5,6 +5,4 @@ runs/
 .venv/
 choco/
 mmdet_env/
-mmdetection/
 clean_venv/
-mmdetection/

@@ -4,3 +4,6 @@ data/
 runs/
 .venv/
 choco/
+ADE20K_2017_05_30_consistency.zip
+ADE20K_dataset/
+exported_markup.zip

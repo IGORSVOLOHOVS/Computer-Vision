@@ -1,59 +1,62 @@
-import torch
-import torchvision
-from torchvision import transforms, models
-from PIL import Image
+import sys
 
-# Загрузка данных
-val_dataset = torchvision.datasets.CIFAR10(
-    root='./data',
-    train=False,      # Указываем, что это НЕ тренировочная выборка
-    download=True     # Разрешаем скачивание, если датасета нет
-)
+from rich.console import Console
+from rich.table import Table
+from rich.traceback import install
 
-# Загрузка модели
-weights = models.MobileNet_V2_Weights.IMAGENET1K_V1
-model = models.mobilenet_v2(weights=weights)
+from src.application.service import ClassifierService
+from src.infrastructure.image_adapter import PILImageLoader
+from src.infrastructure.timm_adapter import TimmClassifier
 
-model.eval()
-
-# Подготовка одного изображения
-img_pil, label = val_dataset[0]
-
-preprocess = weights.transforms()
-
-# Применяем трансформации к нашему изображению
-input_tensor = preprocess(img_pil)
-
-# Модель ожидает на вход батч изображений. Наш тензор имеет форму [C, H, W].
-# Мы должны добавить "батчевое" измерение, чтобы получить [1, C, H, W].
-input_batch = input_tensor.unsqueeze(0) 
-
-# Получение предсказания
-# `torch.no_grad()` отключает расчёт градиентов, что экономит память и ускоряет инференс
-with torch.no_grad():
-    # Подаём подготовленный батч в модель. Модель вызывается как функция
-    output = model(input_batch)
-
-# `output` содержит "сырые" значения для 1000 классов ImageNet
-# Преобразуем их в вероятности с помощью функции softmax
-probabilities = torch.nn.functional.softmax(output[0], dim=0)
+# Advanced error reporting
+install(show_locals=True)
+console = Console()
 
 
-# Вывод результата
-# Найдём топ-5 предсказанных классов и их вероятности
-top5_prob, top5_catid = torch.topk(probabilities, 5)
+def main(
+    image_path: str = "image.png", model_name: str = "vit_base_patch16_384"
+) -> None:
+    """Main entry point for image classification."""
 
-# Получаем список названий классов из метаданных весов
-categories = weights.meta["categories"] 
+    try:
+        # 1. Initialize Adapters (Infrastructure)
+        console.print(f"[bold blue]Initializing model:[/bold blue] {model_name}...")
+        classifier = TimmClassifier(model_name=model_name)
 
-for i in range(top5_prob.size(0)):
-    category_name = categories[top5_catid[i]]
-    probability = top5_prob[i].item()
-    print(f"  {i+1}. Класс: {category_name:<20} | Вероятность: {probability*100:.2f}%")
+        # Determine correct input size from the model
+        input_size = classifier.get_input_size()
+        console.print(f"[bold green]Detected input size:[/bold green] {input_size}")
+
+        loader = PILImageLoader(size=input_size)
+
+        # 2. Initialize Service (Application)
+        service = ClassifierService(classifier=classifier, loader=loader)
+
+        # 3. Execute Core Logic
+        console.print(f"[bold blue]Processing image:[/bold blue] {image_path}...")
+        result = service.classify_image(image_path)
+
+        # 4. Present Results
+        table = Table(title=f"Classification Results for '{image_path}'")
+        table.add_column("Property", style="cyan")
+        table.add_column("Value", style="magenta")
+
+        table.add_row("Model", result.model_name)
+        table.add_row("Top Prediction", result.top_prediction.label)
+        table.add_row("Confidence", f"{result.top_prediction.confidence:.4f}")
+
+        console.print(table)
+
+    except FileNotFoundError as e:
+        console.print(f"[bold red]Error:[/bold red] {e}")
+        sys.exit(1)
+    except Exception as e:
+        console.print(f"[bold red]Unexpected Error:[/bold red] {e}")
+        console.print_exception()
+        sys.exit(1)
 
 
-    py -3.10 -m venv clean_venv 
-.\clean_venv\Scripts\activate  
-# Для того, чтобы позже собрать mmdetection из исходников,
-# нам понадобится более старая версия pip
-python -m pip install pip==21.2.3
+if __name__ == "__main__":
+    # Get image path from args if provided
+    img = sys.argv[1] if len(sys.argv) > 1 else "image.png"
+    main(image_path=img)

@@ -9,6 +9,7 @@ results/
 *.zip
 *.crdownload
 *.json
+Bone_Fracture_Binary_Classification/
 
 # Python
 __pycache__/
@@ -61,3 +62,6 @@ image.png
 
 # Task files
 task*.py
+
+# Prediction samples
+prediction_samples/

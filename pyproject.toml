@@ -13,6 +13,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "pytest",
+    "pytest-cov",   # the CI runs pytest --cov; without this the run aborts
     "ruff",
     "mypy",
 ]

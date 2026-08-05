@@ -13,7 +13,8 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "pytest",
-    "pytest-cov",   # the CI runs pytest --cov; without this the run aborts
+    "pytest-cov",    # the CI runs pytest --cov; without this the run aborts
+    "pytest-mock",   # the suite uses the `mocker` fixture
     "ruff",
     "mypy",
 ]

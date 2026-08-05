@@ -18,6 +18,8 @@ dev = [
 ]
 
 [tool.ruff]
+# Vendored tooling and generated output, not this project's code.
+extend-exclude = [".agent"]
 line-length = 88
 target-version = "py310"
 
@@ -38,3 +40,8 @@ ignore_missing_imports = true
 [build-system]
 requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[tool.ruff.lint.per-file-ignores]
+# The helper scripts drive git and build tools through subprocess on
+# purpose; the bandit checks flag that by design.
+"scripts/*" = ["S404", "S603", "S607", "S310", "PLR0912", "C901", "ANN", "D"]

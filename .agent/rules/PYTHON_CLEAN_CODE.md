@@ -46,5 +46,6 @@ All Python formatting and linting MUST adhere to the defaults provided by `ruff`
 - **Rich Tracebacks**: All entry points (CLI, Main scripts) SHOULD install `rich.traceback` for beautiful, localized error reporting.
 ```python
 from rich.traceback import install
+
 install(show_locals=True)
 ```

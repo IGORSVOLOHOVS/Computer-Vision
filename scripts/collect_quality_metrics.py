@@ -6,7 +6,8 @@ CAN do is gather the objective evidence that a written assessment then cites, so
 the assessment stops being an opinion with no numbers behind it.
 
     python scripts/collect_quality_metrics.py
-    python scripts/collect_quality_metrics.py --output quality-report.json --fail-under 70
+    python scripts/collect_quality_metrics.py \
+        --output quality-report.json --fail-under 70
 
 Measured here:
   Functional suitability  - test pass rate

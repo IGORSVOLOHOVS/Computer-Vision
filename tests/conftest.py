@@ -23,6 +23,13 @@ def mock_timm_model(mocker: Any) -> MagicMock:
     }
     # Mocking the forward pass to return a tensor of logits
     mock_model.return_value = torch.tensor([[10.0, 1.0, 0.5]])
+    # The adapter rebinds self.model from .half() when a GPU is present, and a
+    # plain MagicMock returns a *different* mock from that call - one with no
+    # default_cfg and no logits. The suite then passed on a CPU-only runner and
+    # failed on any machine with CUDA. Returning self keeps both identical.
+    mock_model.half.return_value = mock_model
+    mock_model.to.return_value = mock_model
+    mock_model.eval.return_value = mock_model
     return mock_model
 
 

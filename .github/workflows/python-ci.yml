@@ -21,7 +21,7 @@ jobs:
       run: curl -LsSf https://astral.sh/uv/install.sh | sh
       
     - name: Install Dependencies
-      run: uv sync --dev
+      run: uv sync --all-extras
       
     - name: Format Check (Ruff)
       run: uv run ruff format --check .

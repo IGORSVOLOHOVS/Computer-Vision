@@ -17,7 +17,9 @@ dev = [
     "pytest-mock",   # the suite uses the `mocker` fixture
     "ruff",
     "mypy",
+    "pytest-benchmark",   # benchmarks/ needs the `benchmark` fixture
 ]
+release = ["pyinstaller>=6.0"]
 
 [tool.ruff]
 # Vendored tooling and generated output, not this project's code.

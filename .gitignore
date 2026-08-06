@@ -62,3 +62,8 @@ image.png
 # Task files
 task*.py
 .env
+
+# Build output
+release/
+.coverage
+coverage.xml

@@ -1,4 +1,29 @@
-# Data and output
+# Built, fetched and scratch - only ever at the root
+/dist/
+/build/
+/out/
+/tmp/
+/.venv/
+/.coverage
+
+# What the tools cache, wherever they run
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Prompt text, and one person's Claude Code settings
+.claude/logs/
+.claude/settings.local.json
+
+# No .env line: .claude/.env holds the keys and is committed on purpose (R-02).
+# DEVIATION from the line above, decided by the repository owner: no key is
+# ever committed, so .claude/.env is ignored here. Rule 4 of CLAUDE.md is
+# where that reversal is written down.
+.claude/.env
+
+# What this repository writes, kept from before the lab
 data/
 runs/
 val2017/
@@ -8,62 +33,21 @@ results/
 *.pt
 *.zip
 *.crdownload
-*.json
-
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-env/
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
-
-# Virtual environments
-.venv/
 venv/
 ENV/
 choco/
 mmdet_env/
 clean_venv/
-
-# IDEs
-.vscode/
-.idea/
-
-# Agent
 .agent/tmp/
-
-# Profiles and logs
 *.log
 profile_results*.txt
-
-# Temporary images
 Figure_1.png
 image.png
-
-# Task files
 task*.py
-.env
-
-# Build output
 release/
-.coverage
 coverage.xml
+.benchmarks/
+.coverage.json
+quality-report.json
+*.egg-info/
+.env

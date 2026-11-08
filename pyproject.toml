@@ -1,51 +1,112 @@
+# pyproject.toml - Python's own file for computer-vision.
+#
+# It pins the toolchain. `recipe.ps1 test` runs pytest, mypy, ruff check and ruff
+# format, and every setting those four read is here. There are no task-runner
+# sections: the recipe's verbs are the tasks.
+
+[build-system]
+# Pinned with a version, not a bare name: an unpinned backend changes what
+# `recipe.ps1 build` produces without anyone editing this file.
+requires = ["setuptools==80.9.0"]
+build-backend = "setuptools.build_meta"
+
 [project]
-name = "Computer-Vision"
-version = "1.0.0"
-description = "A computer vision project for mushroom classification."
+name = "computer-vision"
+# This must equal $Version in recipe.ps1: `recipe.ps1 test` fails when they disagree.
+version = "1.1.0"
+description = "Console tool that classifies an image with a timm vision model, arranged as ports and adapters."
 readme = "README.md"
-requires-python = ">=3.10"
+license = "MIT"
+authors = [{ name = "Igors Volohovs" }]
+requires-python = ">=3.13,<3.14"
 dependencies = [
-    "torch",
-    "torchvision",
-    "timm",
+    # torch and torchvision are held to one pair: PyPI's Windows wheels of torch are the
+    # CPU build, so the lab's runner never fetches a CUDA stack.
+    "torch==2.11.0",
+    "torchvision==0.26.0",
+    "timm==1.0.31",
+    "pillow==13.0.0",
+    "numpy==2.5.4",
+    # main.py imports it, and nothing declared it before the lab.
+    "rich==15.0.0",
 ]
 
 [project.optional-dependencies]
-dev = [
-    "pytest",
-    "pytest-cov",    # the CI runs pytest --cov; without this the run aborts
-    "pytest-mock",   # the suite uses the `mocker` fixture
-    "ruff",
-    "mypy",
-    "pytest-benchmark",   # benchmarks/ needs the `benchmark` fixture
-]
+# Only scripts/build_release_artifact.py needs this. The lab ships a wheel.
 release = ["pyinstaller>=6.0"]
 
+[dependency-groups]
+# `uv run` installs this group by default, so test.yaml's Runner health step finds
+# ruff, pytest and mypy through `uv run --frozen <tool> --version`.
+dev = [
+    "ruff==0.16.1",
+    "mypy==2.3.0",
+    "pytest==8.4.2",
+    "pytest-cov==5.0.0",
+    "coverage==7.15.2",
+    # The suite uses the `mocker` fixture.
+    "pytest-mock==3.17.0",
+    # benchmarks/ and scripts/collect_quality_metrics.py, kept from before the lab.
+    "pytest-benchmark==5.3.1",
+    "radon==6.0.1",
+]
+
+[tool.setuptools.packages.find]
+# The code imports itself as `src.<layer>`, so `src` is the package the wheel carries.
+include = ["src", "src.*"]
+
+[tool.uv]
+# The tests and `recipe.ps1 run` use the source tree, so uv does not install the project.
+package = false
+
 [tool.ruff]
-# Vendored tooling and generated output, not this project's code.
-extend-exclude = [".agent"]
+# Ruff refuses to run at all when its own version is not this one.
+required-version = "0.16.1"
+target-version = "py313"
 line-length = 88
-target-version = "py310"
+# Vendored agent tooling and generated API docs are not this project's code. Section 7
+# prints .claude/, tests/manual/serve.py and tools/wiki.py verbatim, so neither the
+# linter nor the formatter may touch them.
+extend-exclude = [".agent", ".claude", "docs", "tests/manual/serve.py", "tools/wiki.py"]
 
 [tool.ruff.lint]
 select = ["E", "F", "B", "I", "UP"]
 ignore = []
 
-[tool.mypy]
-python_version = "3.10"
-strict = true
-ignore_missing_imports = true
-exclude = ["clean_venv"]
-
-[[tool.mypy.overrides]]
-module = ["torch.*", "torchvision.*", "timm.*"]
-ignore_missing_imports = true
-
-[build-system]
-requires = ["setuptools>=61.0", "wheel"]
-build-backend = "setuptools.build_meta"
-
 [tool.ruff.lint.per-file-ignores]
 # The helper scripts drive git and build tools through subprocess on
 # purpose; the bandit checks flag that by design.
 "scripts/*" = ["S404", "S603", "S607", "S310", "PLR0912", "C901", "ANN", "D"]
+"tests/test_manual_list.py" = ["E501"]
+
+[tool.ruff.format]
+line-ending = "lf"
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+python_files = "test_*.py"
+# The code imports itself as `src.<layer>` from the repository root.
+pythonpath = ["."]
+addopts = "-q --cov --cov-report=term --cov-fail-under=18"
+
+[tool.coverage.run]
+# Everything of this repository's own: the package and main.py from the root, and the
+# scripts, which have no __init__.py and so need naming. `main.py` alone is read as a module
+# name, which makes coverage import torch a second time.
+source = [".", "scripts"]
+branch = true
+omit = ["tests/*", "benchmarks/*", "tools/*", ".claude/*", ".agent/*", ".venv/*", "build/*", "dist/*"]
+
+[tool.coverage.report]
+show_missing = true
+
+[tool.mypy]
+python_version = "3.13"
+files = ["src", "main.py", "tools"]
+strict = true
+explicit_package_bases = true
+
+[[tool.mypy.overrides]]
+module = ["torchvision.*"]
+ignore_missing_imports = true

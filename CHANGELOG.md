@@ -1,5 +1,41 @@
 # Changelog
 
+## v1.1.0 (2026-11-08)
+
+### Commits since v1.0.0
+
+- af367ca docs(docs): name revision 4.0.0 and its exceptions in the README
+- 1ba8d2a ci(ci): add the five lab workflows and the issue and pull request templates
+- ff501bf chore(core): add the AI environment, its hooks and the lab-ai-env skill
+- d4bfc9d docs(docs): add the README, licence, rules and manual
+- c26fe68 build(build): add recipe.ps1 and the test suites it runs
+- 302867b refactor(core): point the quality metrics script at the lab's workflows
+- 9191016 build(build): pin the toolchain, and decide line endings and ignores
+- e9aaa14 chore: bring the pre-push check up to date
+- 26ac91f chore: stop the secret scan running on a weekly schedule
+- b667241 chore: add the pre-push check that mirrors CI
+- 2b68868 chore: add the pre-push check that mirrors CI
+
+### Issues
+
+- #1 Pin the toolchain, and decide line endings and ignores in computer-vision (open)
+- #2 Bring the sources of computer-vision under the pinned tools (open)
+- #3 Add recipe.ps1 and its test suites to computer-vision (open)
+- #4 Add the README, licence, rules and manual to computer-vision (open)
+- #5 Add the AI environment to computer-vision (open)
+- #6 Add the gates and templates to computer-vision (open)
+- #7 State the revision 4.0.0 compliance line in computer-vision (open)
+
+### Pull requests
+
+- #14 build(build): pin the toolchain, and decide line endings and ignores (closed)
+- #15 refactor(core): point the quality metrics script at the lab's workflows (closed)
+- #16 build(build): add recipe.ps1 and the test suites it runs (closed)
+- #17 docs(docs): add the README, licence, rules and manual (closed)
+- #18 chore(core): add the AI environment, its hooks and the lab-ai-env skill (closed)
+- #19 ci(ci): add the five lab workflows and the issue and pull request templates (closed)
+- #20 docs(docs): name revision 4.0.0 and its exceptions in the README (closed)
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),

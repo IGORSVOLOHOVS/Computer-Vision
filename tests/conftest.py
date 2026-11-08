@@ -1,3 +1,4 @@
+import os
 from typing import Any
 from unittest.mock import MagicMock
 
@@ -5,6 +6,12 @@ import pytest
 import torch
 
 from src.domain.models import ClassificationResult, Prediction
+
+# huggingface_hub reads this once, on import, and nothing has imported it yet:
+# conftest.py comes first. `timm.create_model(pretrained=True)` fetches its weights
+# through the hub, so a test that reaches for them fails on the spot instead of
+# downloading them, however pytest was started.
+os.environ["HF_HUB_OFFLINE"] = "1"
 
 
 @pytest.fixture

@@ -11,12 +11,10 @@ Expect an acknowledgement within a few days.
 
 | Control | Where it runs |
 | --- | --- |
-| Secret scanning before commit | `gitleaks` in `.pre-commit-config.yaml` |
-| Secret scanning over full history | `gitleaks` job in `.github/workflows/ci.yml`, with `fetch-depth: 0` |
-| Private key detection | `detect-private-key` pre-commit hook |
-| Static security linting | `ruff` rule set `S` (bandit rules) |
-| Pinned dependencies | `requirements-dev.lock` |
-| Artefact integrity | `.sha256` published beside every release file |
+| Secret scanning over full history | `gitleaks`, on GitHub's copy only: no gate on this server runs a scanner |
+| Linting | `ruff check` in `recipe.ps1 test`; the `S` (bandit) rules are not selected |
+| Pinned dependencies | `uv.lock`, read with `uv run --frozen` |
+| What a release was made of | the SBOM `release.yaml` attaches to every release |
 
 ## Handling credentials
 

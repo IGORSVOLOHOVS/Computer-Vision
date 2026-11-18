@@ -7,6 +7,42 @@ the cited evidence, not stated in code. Claims from documents that the code
 does not implement are listed apart, in 3.8. The later commits on
 `origin/release` (tag `v1.1.0`) and `origin/test` are not covered.
 
+<!-- jira-sync:start -->
+Jira: KAN-70
+
+## Tasks
+
+This list is one ticket in Jira project KAN, [KAN-70](https://igorsvolohovs.atlassian.net/browse/KAN-70). Each line is a checkbox there: tick it in Jira and the sync ticks it here; add a checkbox there and it is appended here. Done items are the features described in section 3; open items are what the project declares but the code does not do yet.
+
+- [x] Image loading (`PILImageLoader`) (section 3.1) <!-- spec-image-loading-pilimageloader -->
+- [x] Classification adapter (`TimmClassifier`) (section 3.2) <!-- spec-classification-adapter-timmclassifier -->
+- [x] Orchestration (`ClassifierService`) (section 3.3) <!-- spec-orchestration-classifierservice -->
+- [x] Domain types and ports (section 3.4) <!-- spec-domain-types-and-ports -->
+- [x] Command-line program (`main.py`) (section 3.5) <!-- spec-command-line-program-main-py -->
+- [x] Repository tooling (section 3.6) <!-- spec-repository-tooling -->
+- [x] CI and release automation (section 3.7) <!-- spec-ci-and-release-automation -->
+- [ ] The result includes the full ranking (declared, not implemented) <!-- spec-the-result-includes-the-full-ranking -->
+- [ ] `main.py` supports `--help` (declared, not implemented) <!-- spec-main-py-supports-help -->
+- [ ] Mushroom classification (agaric, bolete, stinkhorn) (declared, not implemented) <!-- spec-mushroom-classification-agaric-bolete-stinkhorn -->
+- [ ] `task3.py` for prototyping (declared, not implemented) <!-- spec-task3-py-for-prototyping -->
+- [ ] Profiling results `profile_results_optimized.txt` (declared, not implemented) <!-- spec-profiling-results-profileresultsoptimized-txt -->
+- [ ] Profiling script for this project (declared, not implemented) <!-- spec-profiling-script-for-this-project -->
+- [ ] A console entry point in the wheel (declared, not implemented) <!-- spec-a-console-entry-point-in-the-wheel -->
+- [ ] A branch-policy workflow on every push and every Monday (declared, not implemented) <!-- spec-a-branch-policy-workflow-on-every-push-and-every-m -->
+- [ ] The release workflow runs the tests and builds an executable and a zip (declared, not implemented) <!-- spec-the-release-workflow-runs-the-tests-and-builds-an- -->
+- [ ] Coverage gate of 85 % (`fail_under`) (declared, not implemented) <!-- spec-coverage-gate-of-85-failunder -->
+- [ ] Complexity limit (ruff `C90`) (declared, not implemented) <!-- spec-complexity-limit-ruff-c90 -->
+- [ ] gitleaks and `detect-private-key` in pre-commit (declared, not implemented) <!-- spec-gitleaks-and-detect-private-key-in-pre-commit -->
+- [ ] Bandit rules (`S`) in ruff (declared, not implemented) <!-- spec-bandit-rules-s-in-ruff -->
+- [ ] Pinned dependencies in `requirements-dev.lock` (declared, not implemented) <!-- spec-pinned-dependencies-in-requirements-dev-lock -->
+- [ ] Domain layer with no external dependencies (declared, not implemented) <!-- spec-domain-layer-with-no-external-dependencies -->
+- [ ] A manual release run takes a required `version` input (declared, not implemented) <!-- spec-a-manual-release-run-takes-a-required-version-inpu -->
+- [ ] The wheel installs a top-level `src` package (declared, not implemented) <!-- spec-the-wheel-installs-a-top-level-src-package -->
+- [ ] The release script checks that the installed wheel imports (declared, not implemented) <!-- spec-the-release-script-checks-that-the-installed-wheel -->
+- [ ] `pytest benchmarks --benchmark-only` runs the benchmarks (declared, not implemented) <!-- spec-pytest-benchmarks-benchmark-only-runs-the-benchmar -->
+
+<!-- jira-sync:end -->
+
 ## 1. Purpose and scope
 
 **Purpose.** The program classifies a single image file with a pretrained

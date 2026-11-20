@@ -425,3 +425,145 @@ Manual checks for the FRs without a test:
 13. **Branch divergence.** `origin/release` (tag `v1.1.0`, 2026-11-08) and
     `origin/test` contain changes that are not in `dev`. Which branch is
     authoritative for this specification?
+
+## Screenshots of requirements
+
+### FR-1 - If the image path does not exist, the system shall raise FileNotFoundError with the message Image not found at…
+
+> Screenshot skipped: the code does not run here - the project runs on PyTorch-class libraries and trained weights, and torch is not installed here (multi-gigabyte); requirements whose code does not need torch will be revisited in a later pass.
+
+### FR-2 - The system shall open the file with Pillow and convert it to RGB
+
+> Screenshot skipped: the code does not run here - the project runs on PyTorch-class libraries and trained weights, and torch is not installed here (multi-gigabyte); requirements whose code does not need torch will be revisited in a later pass.
+
+### FR-3 - The system shall resize the image so that its shorter side equals size, centre-crop it to size × size, convert…
+
+> Screenshot skipped: the code does not run here - the project runs on PyTorch-class libraries and trained weights, and torch is not installed here (multi-gigabyte); requirements whose code does not need torch will be revisited in a later pass.
+
+### FR-4 - The system shall return a tensor of shape [1, 3, size, size] (batch dimension added)
+
+> Screenshot skipped: the code does not run here - the project runs on PyTorch-class libraries and trained weights, and torch is not installed here (multi-gigabyte); requirements whose code does not need torch will be revisited in a later pass.
+
+### FR-5 - When no size is given, the system shall use a size of 224
+
+> Screenshot skipped: the code does not run here - the project runs on PyTorch-class libraries and trained weights, and torch is not installed here (multi-gigabyte); requirements whose code does not need torch will be revisited in a later pass.
+
+### FR-6 - The system shall create the model with timm.createmodel(modelname, pretrained=pretrained), with pretrained def…
+
+> Screenshot skipped: the code does not run here - the project runs on PyTorch-class libraries and trained weights, and torch is not installed here (multi-gigabyte); requirements whose code does not need torch will be revisited in a later pass.
+
+### FR-7 - The system shall choose the device in the order CUDA, then MPS, then CPU, and move the model to that device
+
+> Screenshot skipped: the code does not run here - the project runs on PyTorch-class libraries and trained weights, and torch is not installed here (multi-gigabyte); requirements whose code does not need torch will be revisited in a later pass.
+
+### FR-8 - When usefp16 is true (the default) and the device is not CPU, the system shall convert the model and each inpu…
+
+> Screenshot skipped: the code does not run here - the project runs on PyTorch-class libraries and trained weights, and torch is not installed here (multi-gigabyte); requirements whose code does not need torch will be revisited in a later pass.
+
+### FR-9 - The system shall read class names from defaultcfg["labelnames"], or use an empty list when they are missing
+
+> Screenshot skipped: the code does not run here - the project runs on PyTorch-class libraries and trained weights, and torch is not installed here (multi-gigabyte); requirements whose code does not need torch will be revisited in a later pass.
+
+### FR-10 - The system shall run the forward pass under torch.nograd(), apply softmax to the first batch element's logits,…
+
+> Screenshot skipped: the code does not run here - the project runs on PyTorch-class libraries and trained weights, and torch is not installed here (multi-gigabyte); requirements whose code does not need torch will be revisited in a later pass.
+
+### FR-11 - The system shall label the top class with labelnames[index] when that name exists, and otherwise with class<in…
+
+> Screenshot skipped: the code does not run here - the project runs on PyTorch-class libraries and trained weights, and torch is not installed here (multi-gigabyte); requirements whose code does not need torch will be revisited in a later pass.
+
+### FR-12 - The system shall return a ClassificationResult whose allpredictions is a one-element list holding toppredictio…
+
+> Screenshot skipped: the code does not run here - the project runs on PyTorch-class libraries and trained weights, and torch is not installed here (multi-gigabyte); requirements whose code does not need torch will be revisited in a later pass.
+
+### FR-13 - The system shall report the input size as the last element of defaultcfg["inputsize"], and as 224 when that ke…
+
+> Screenshot skipped: the code does not run here - the project runs on PyTorch-class libraries and trained weights, and torch is not installed here (multi-gigabyte); requirements whose code does not need torch will be revisited in a later pass.
+
+### FR-14 - The system shall return the configured model name from getmodelname()
+
+> Screenshot skipped: the code does not run here - the project runs on PyTorch-class libraries and trained weights, and torch is not installed here (multi-gigabyte); requirements whose code does not need torch will be revisited in a later pass.
+
+### FR-15 - For a path, the system shall call loader.loadandtransform(path) once, pass the resulting tensor to classifier.…
+
+> Screenshot skipped: the code does not run here - the project runs on PyTorch-class libraries and trained weights, and torch is not installed here (multi-gigabyte); requirements whose code does not need torch will be revisited in a later pass.
+
+### FR-16 - The system shall represent results as immutable Prediction(label, confidence) and ClassificationResult(toppred…
+
+> Screenshot skipped: the code does not run here - the project runs on PyTorch-class libraries and trained weights, and torch is not installed here (multi-gigabyte); requirements whose code does not need torch will be revisited in a later pass.
+
+### FR-17 - The system shall define the ports ImageClassifier (classify, getmodelname, getinputsize) and ImageLoader (load…
+
+> Screenshot skipped: the code does not run here - the project runs on PyTorch-class libraries and trained weights, and torch is not installed here (multi-gigabyte); requirements whose code does not need torch will be revisited in a later pass.
+
+### FR-18 - The system shall take the image path from the first command-line argument, and use image.png when there is non…
+
+> Screenshot skipped: the code does not run here - the project runs on PyTorch-class libraries and trained weights, and torch is not installed here (multi-gigabyte); requirements whose code does not need torch will be revisited in a later pass.
+
+### FR-19 - The system shall classify with the model vitbasepatch16384. The command line cannot change it
+
+> Screenshot skipped: the code does not run here - the project runs on PyTorch-class libraries and trained weights, and torch is not installed here (multi-gigabyte); requirements whose code does not need torch will be revisited in a later pass.
+
+### FR-20 - The system shall build the image loader with the input size reported by the classifier
+
+> Screenshot skipped: the code does not run here - the project runs on PyTorch-class libraries and trained weights, and torch is not installed here (multi-gigabyte); requirements whose code does not need torch will be revisited in a later pass.
+
+### FR-21 - The system shall print a table titled Classification Results for '<path>' with the rows Model, Top Prediction …
+
+> Screenshot skipped: the code does not run here - the project runs on PyTorch-class libraries and trained weights, and torch is not installed here (multi-gigabyte); requirements whose code does not need torch will be revisited in a later pass.
+
+### FR-22 - On FileNotFoundError, the system shall print Error: <message> and exit with code 1. On any other exception, it…
+
+> Screenshot skipped: the code does not run here - the project runs on PyTorch-class libraries and trained weights, and torch is not installed here (multi-gigabyte); requirements whose code does not need torch will be revisited in a later pass.
+
+### FR-23 - buildreleaseartifact.py shall build a wheel and an sdist with python -m build, copy them into a freshly create…
+
+> Screenshot skipped: the code does not run here - the project runs on PyTorch-class libraries and trained weights, and torch is not installed here (multi-gigabyte); requirements whose code does not need torch will be revisited in a later pass.
+
+### FR-24 - Unless --skip-verify is given, buildreleaseartifact.py shall install the wheel into a temporary venv with --no…
+
+> Screenshot skipped: the code does not run here - the project runs on PyTorch-class libraries and trained weights, and torch is not installed here (multi-gigabyte); requirements whose code does not need torch will be revisited in a later pass.
+
+### FR-25 - checkbeforepush.py shall collect the ruff, mypy and pytest commands from .github/workflows/.yml, run them with…
+
+> Screenshot pending: this requirement is about the repository tooling (recipe.ps1, git hooks, CI), which does run on this machine; it will be captured in a later pass.
+
+### FR-26 - checkbeforepush.py shall remove --cov flags when pytestcov is missing. It shall report a pytest run as skipped…
+
+> Screenshot skipped: the code does not run here - the project runs on PyTorch-class libraries and trained weights, and torch is not installed here (multi-gigabyte); requirements whose code does not need torch will be revisited in a later pass.
+
+### FR-27 - checkbeforepush.py --install-hook shall write .git/hooks/pre-push, which runs the script with --quiet
+
+> Screenshot pending: this requirement is about the repository tooling (recipe.ps1, git hooks, CI), which does run on this machine; it will be captured in a later pass.
+
+### FR-28 - collectqualitymetrics.py shall report the test pass rate, coverage, radon complexity / maintainability index w…
+
+> Screenshot skipped: the code does not run here - the project runs on PyTorch-class libraries and trained weights, and torch is not installed here (multi-gigabyte); requirements whose code does not need torch will be revisited in a later pass.
+
+### FR-29 - enforcebranchpolicy.py shall report every local branch other than release, dev and test and, with --remote, ev…
+
+> Screenshot skipped: the code does not run here - the project runs on PyTorch-class libraries and trained weights, and torch is not installed here (multi-gigabyte); requirements whose code does not need torch will be revisited in a later pass.
+
+### FR-30 - installdependencies.py shall install the project editable (with [dev] when --dev is given), regenerate require…
+
+> Screenshot skipped: the code does not run here - the project runs on PyTorch-class libraries and trained weights, and torch is not installed here (multi-gigabyte); requirements whose code does not need torch will be revisited in a later pass.
+
+### FR-31 - The commit-msg hook shall reject a subject that does not match type(scope): text., where type is one of feat, …
+
+> Screenshot pending: this requirement is about the repository tooling (recipe.ps1, git hooks, CI), which does run on this machine; it will be captured in a later pass.
+
+### FR-32 - agent/scripts/docspython.py shall generate HTML API docs into docs/ with python -m pdoc src -o docs, using cle…
+
+> Screenshot skipped: the code does not run here - the project runs on PyTorch-class libraries and trained weights, and torch is not installed here (multi-gigabyte); requirements whose code does not need torch will be revisited in a later pass.
+
+### FR-33 - On every push and pull request to release, dev or test, CI shall run ruff format --check ., ruff check ., mypy…
+
+> Screenshot pending: this requirement is about the repository tooling (recipe.ps1, git hooks, CI), which does run on this machine; it will be captured in a later pass.
+
+### FR-34 - On a tag v.., the release workflow shall build the artefacts with scripts/buildreleaseartifact.py and publish …
+
+> Screenshot pending: this requirement is about the repository tooling (recipe.ps1, git hooks, CI), which does run on this machine; it will be captured in a later pass.
+
+### FR-35 - The secret scan shall run gitleaks over the full history on every push, every pull request, every Monday at 06…
+
+> Screenshot pending: this requirement is about the repository tooling (recipe.ps1, git hooks, CI), which does run on this machine; it will be captured in a later pass.
